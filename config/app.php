@@ -126,6 +126,9 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    'maps_google_api_url' => env('MAPS_GOOGLE_API_URL'),
+    'api_key_google' => env('API_KEY_GOOGLE'),
+
     /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver
