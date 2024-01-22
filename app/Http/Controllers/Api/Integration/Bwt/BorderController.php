@@ -15,10 +15,10 @@ class BorderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(BorderRequest\Get $request)
     {
         try {
-            $response = BwtHelperBorder::getBorderWidthCords(request()->coordinate_one, request()->coordinate_two, request()->coordinate_tree, request()->line);
+            $response = BwtHelperBorder::storeBorderWidthCords($request->coordinates, $request->line);
         } catch (\Exception $err) {
             return response()->json([
                 'success' => false,

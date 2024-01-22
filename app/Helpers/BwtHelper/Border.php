@@ -2,8 +2,13 @@
 
 namespace App\Helpers\BwtHelper;
 
+use App\Jobs\ProcessInsertBorder;
 use Exception;
 use GuzzleHttp\Client;
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
+use Saloon\XmlWrangler\XmlWrangler;
 
 class Border
 {
@@ -14,18 +19,53 @@ class Border
         ]);
     }
 
-    public static function getBorderWidthCords($uno, $dos, $tres, $line)
+    public static function getBordersForBwt($coordinates, $line)
     {
         try {
             $client = self::getClient();
 
-            $response = $client->get("/{$uno}, {$dos}, {$tres}/{$line}");
+            $response = $client->get("bwtRss/HTML/-1/{$coordinates}/{$line}");
             $content = $response->getBody()->getContents();
             $xml = simplexml_load_string($content);
         } catch (\Exception $err) {
             return throw new Exception("Error: " . $err->getMessage(), 500);
         }
-
         return $xml;
+    }
+
+    public static function transformDataForBorder($border)
+    {
+    }
+    public static function storeBorderWidthCords($coordinates, $line)
+    {
+
+        try {
+            $borders = self::getBordersForBwt($coordinates, $line);
+
+            $xmlWrangler = new XmlWrangler();
+            $xml = $xmlWrangler->loadString($borders);
+            $items = $xml->xpath('item'); 
+            $bordersJobs = [];
+
+            return $items;
+            Log::debug("holaaa1");
+
+            foreach ($items as $border) {
+                Log::debug($border->description);
+                Log::debug("holaaa");
+                $bordersJobs[] = new ProcessInsertBorder($border);
+            }
+
+            $batch = Bus::batch($bordersJobs)->then(function (Batch $batch) {
+                // All jobs completed successfully...
+            })->catch(function (Batch $batch, Exception $e) {
+                // First batch job failure detected...
+            })->finally(function (Batch $batch) {
+                // The batch has finished executing...
+            })->dispatch();
+        } catch (\Exception $err) {
+            return throw new Exception("Error: " . $err->getMessage(), 500);
+        }
+        return "listo";
     }
 }

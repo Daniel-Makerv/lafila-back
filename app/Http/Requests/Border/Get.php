@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Border;
 
+use App\Rules\CommaSeparatedNumbers;
 use Illuminate\Foundation\Http\FormRequest;
 
 class Get extends FormRequest
@@ -17,14 +18,13 @@ class Get extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return \Illuminate\Http\JsonResponse
+
      */
     public function rules(): array
     {
         return [
-            'coordinate_one' => 'required',
-            'coordinate_two' => 'required',
-            'coordinate_tree' => 'required',
+            'coordinates' => ['required', new CommaSeparatedNumbers],
             'line' => 'required',
         ];
     }
@@ -37,9 +37,7 @@ class Get extends FormRequest
     public function attributes()
     {
         return [
-            'coordinate_one' => 'coordinate_one',
-            'coordinate_two' => 'coordinate_two',
-            'coordinate_tree' => 'coordinate_tree',
+            'coordinates' => 'coordinates',
             'line' => 'line',
         ];
     }
