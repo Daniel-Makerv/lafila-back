@@ -129,6 +129,10 @@ return [
     'maps_google_api_url' => env('MAPS_GOOGLE_API_URL'),
     'api_key_google' => env('API_KEY_GOOGLE'),
 
+    //bwt
+    'bwt_api_url' => env('BWT_API_URL'),
+
+
     /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver

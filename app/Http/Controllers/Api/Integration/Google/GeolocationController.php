@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Integration\Google;
+namespace App\Http\Controllers\Api\Integration\Google;
 
 use App\Helpers\BridgeHelper\Bridge as BridgeHelper;
 use Illuminate\Http\Request;

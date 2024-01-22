@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Integration\{Google};
+use App\Http\Controllers\Api\{Integration};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,8 +19,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::prefix('integration')->middleware('auth:sanctum')->group(function () {
+Route::prefix('integration')->group(function () {
     Route::prefix('google')->group(function () {
-        Route::resource('/directions', Google\GeolocationController::class)->middleware(['abilities:store-directions']);
+        Route::resource('/directions', Integration\Google\GeolocationController::class)->middleware(['abilities:store-directions']);
+    });
+    Route::prefix('bwt')->group(function () {
+        Route::resource('/lines', Integration\Bwt\BorderController::class);
     });
 });

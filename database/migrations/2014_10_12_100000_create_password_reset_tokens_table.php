@@ -11,10 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
+        \Illuminate\Support\Facades\DB::statement('SET SESSION sql_require_primary_key=0');
+
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
+            $table->string('email');
             $table->string('token');
-            $table->timestamp('created_at')->nullable();
+            $table->timestamps();
+        });
+
+        // Agregar la clave primaria después de la creación de la tabla
+        Schema::table('password_reset_tokens', function (Blueprint $table) {
+            $table->primary('email');
         });
     }
 
