@@ -8,7 +8,10 @@ use GuzzleHttp\Client;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
-use Saloon\XmlWrangler\XmlWrangler;
+use Saloon\XmlWrangler\Data\Element;
+use Saloon\XmlWrangler\XmlWriter;
+use Saloon\XmlWrangler\XmlReader;
+use SimpleXMLElement;
 
 class Border
 {
@@ -26,11 +29,11 @@ class Border
 
             $response = $client->get("bwtRss/HTML/-1/{$coordinates}/{$line}");
             $content = $response->getBody()->getContents();
-            $xml = simplexml_load_string($content);
+            // $xml = simplexml_load_string($content);
         } catch (\Exception $err) {
-            return throw new Exception("Error: " . $err->getMessage(), 500);
+            return throw new Exception("Error: " . $err->getMessage() . $err->getMessage() . $err->getFile() . $err->getLine(), 500);
         }
-        return $xml;
+        return $content;
     }
 
     public static function transformDataForBorder($border)
@@ -42,16 +45,16 @@ class Border
         try {
             $borders = self::getBordersForBwt($coordinates, $line);
 
-            $xmlWrangler = new XmlWrangler();
-            $xml = $xmlWrangler->loadString($borders);
-            $items = $xml->xpath('item'); 
+
+            // Convertir el string XML en un objeto
+            $xml = new SimpleXMLElement($borders);
+            // Procesar cada <item>
             $bordersJobs = [];
 
-            return $items;
             Log::debug("holaaa1");
 
-            foreach ($items as $border) {
-                Log::debug($border->description);
+            foreach ($xml->channel->item as $border) {
+                Log::debug($border);
                 Log::debug("holaaa");
                 $bordersJobs[] = new ProcessInsertBorder($border);
             }
@@ -64,7 +67,7 @@ class Border
                 // The batch has finished executing...
             })->dispatch();
         } catch (\Exception $err) {
-            return throw new Exception("Error: " . $err->getMessage(), 500);
+            return throw new Exception("Error: " . $err->getMessage() . $err->getFile() . $err->getLine(), 500);
         }
         return "listo";
     }
