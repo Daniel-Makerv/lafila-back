@@ -45,15 +45,16 @@ class Border
         try {
             $borders = self::getBordersForBwt($coordinates, $line);
 
-
             // Convertir el string XML en un objeto
             $xml = new SimpleXMLElement($borders);
-            // Procesar cada <item>
+            $transformDataBordersTojson = json_encode($xml);
+            $bordersJson = json_decode($transformDataBordersTojson, true);
+
             $bordersJobs = [];
 
-            Log::debug("holaaa1");
+            return $bordersJson['channel']['item'];
 
-            foreach ($xml->channel->item as $border) {
+            foreach ($bordersJson->item as $border) {
                 Log::debug($border);
                 Log::debug("holaaa");
                 $bordersJobs[] = new ProcessInsertBorder($border);
