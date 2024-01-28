@@ -18,12 +18,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            TypeSeeder::class,
-            IntegrationSeeder::class,
-            IntegrationFieldSeeder::class,
-            IntegrationFieldValueSeeder::class,
-            BridgeSeeder::class,
-            BridgePointSeeder::class,
+            // TypeSeeder::class,
+            // IntegrationSeeder::class,
+            // IntegrationFieldSeeder::class,
+            // IntegrationFieldValueSeeder::class,
+            // BridgeSeeder::class,
+            // BridgePointSeeder::class,
         ]);
     }
 }

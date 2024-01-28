@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Jenssegers\Mongodb\Facades\MongoDB;
 
 class UserSeeder extends Seeder
 {
@@ -14,10 +15,11 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::firstOrCreate([
-            'name' => "jaime",
-            'email' => "jaimegov@gmail.com",
-            'password' => Hash::make('password'),
-        ]);
+
+        $user = new User;
+        $user->title = "jaime";
+        $user->body = "jaimegov@gmail.com";
+        $user->password = Hash::make('password');
+        $user->save();
     }
 }
