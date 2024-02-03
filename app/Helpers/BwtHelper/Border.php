@@ -53,7 +53,7 @@ class Border
             $bordersJobs = [];
 
             foreach ($bordersJson['channel']['item'] as $border) {
-                $bordersJobs[] = ProcessInsertBorder::dispatch((object)$border)->delay(now()->addMinutes(random_int(1, 10)));
+                $bordersJobs[] = ProcessInsertBorder::dispatch((object)$border)->onQueue('bwt')->delay(now()->addMinutes(random_int(1, 10)));
             }
         } catch (\Exception $err) {
             return throw new Exception("Error: " . $err->getMessage() . $err->getFile() . $err->getLine(), 500);
