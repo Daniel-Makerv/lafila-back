@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', 'sync'),
+    'default' => env('QUEUE_CONNECTION', 'redis'),
 
     /*
     |--------------------------------------------------------------------------
@@ -65,7 +65,7 @@ return [
         'redis' => [
             'driver' => 'redis',
             'connection' => 'default',
-            'queue' => env('REDIS_QUEUE', 'default'),
+            'queue' => 'default',
             'retry_after' => 90,
             'block_for' => null,
             'after_commit' => false,
@@ -100,10 +100,16 @@ return [
     |
     */
 
+    // 'failed' => [
+    //     'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
+    //     'database' => env('DB_CONNECTION', 'mysql'),
+    //     'table' => 'failed_jobs',
+    // ],
+
     'failed' => [
-        'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
-        'database' => env('DB_CONNECTION', 'mysql'),
-        'table' => 'failed_jobs',
+        'driver' => 'redis',
+        'connection' => 'default', // Reemplace con el nombre de su conexión Redis si es diferente
+        'queue' => 'default', // Nombre de la cola Redis para almacenar los trabajos fallidos
     ],
 
 ];
