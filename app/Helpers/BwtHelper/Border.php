@@ -52,24 +52,60 @@ class Border
 
             $bordersJobs = [];
 
-            return $bordersJson['channel']['item'];
+            foreach ($bordersJson['channel']['item'] as $border) {
+                $bordersJobs[] = ProcessInsertBorder::dispatch((object)$border)->onQueue('bwt')->delay(now()->addMinutes(random_int(1,10)));
 
-            foreach ($bordersJson->item as $border) {
-                Log::debug($border);
-                Log::debug("holaaa");
-                $bordersJobs[] = new ProcessInsertBorder($border);
             }
 
-            $batch = Bus::batch($bordersJobs)->then(function (Batch $batch) {
-                // All jobs completed successfully...
-            })->catch(function (Batch $batch, Exception $e) {
-                // First batch job failure detected...
-            })->finally(function (Batch $batch) {
-                // The batch has finished executing...
-            })->dispatch();
+            // $batch = Bus::batch($bordersJobs)->then(function (Batch $batch) {
+            //     // All jobs completed successfully...
+            // })->catch(function (Batch $batch, Exception $e) {
+            //     // First batch job failure detected...
+            // })->finally(function (Batch $batch) {
+            //     // The batch has finished executing...
+            // })->dispatch();
         } catch (\Exception $err) {
             return throw new Exception("Error: " . $err->getMessage() . $err->getFile() . $err->getLine(), 500);
         }
         return "listo";
+    }
+
+    public static function getTimePassengerVehicles($description, $search)
+    {
+        try {
+            preg_match("/{$search}: At ([^ ]+)/", $description, $atMatches);
+            $result = isset($atMatches[1]) ? $atMatches[1] : null;
+        } catch (\Exception $err) {
+            Log::error("error: " . $err->getMessage());
+        }
+        return $result;
+    }
+
+    public static function getOpenLinesByline($description, $search)
+    {
+        try {
+            preg_match("/{$search}:.*?(\d+) lane\(s\) open/", $description, $generalLanesMatches);
+            // Verificar si hay "Lanes Closed" después del valor
+            if (strpos($description, "{$search}:  Lanes Closed") !== false) {
+                Log::debug("es cero ");
+                return 0;
+            }
+            $result = isset($generalLanesMatches[1]) ? $generalLanesMatches[1] : null;
+        } catch (\Exception $err) {
+            Log::error("error: " . $err->getMessage());
+        }
+        return $result;
+    }
+
+    public static function getStatusForLine($description, $search)
+    {
+        try {
+            preg_match("/{$search}:.*?(open|Closed)/", $description, $matches);
+            $words = explode(' ', $matches[0]);
+            $matches = end($words);
+        } catch (\Exception $err) {
+            Log::error("error: " . $err->getMessage());
+        }
+        return $matches == 'open' ? 'open' : 'closed';
     }
 }
