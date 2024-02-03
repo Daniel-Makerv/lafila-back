@@ -53,17 +53,8 @@ class Border
             $bordersJobs = [];
 
             foreach ($bordersJson['channel']['item'] as $border) {
-                $bordersJobs[] = ProcessInsertBorder::dispatch((object)$border)->onQueue('bwt')->delay(now()->addMinutes(random_int(1,10)));
-
+                $bordersJobs[] = ProcessInsertBorder::dispatch((object)$border)->delay(now()->addMinutes(random_int(1, 10)));
             }
-
-            // $batch = Bus::batch($bordersJobs)->then(function (Batch $batch) {
-            //     // All jobs completed successfully...
-            // })->catch(function (Batch $batch, Exception $e) {
-            //     // First batch job failure detected...
-            // })->finally(function (Batch $batch) {
-            //     // The batch has finished executing...
-            // })->dispatch();
         } catch (\Exception $err) {
             return throw new Exception("Error: " . $err->getMessage() . $err->getFile() . $err->getLine(), 500);
         }

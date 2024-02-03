@@ -24,9 +24,6 @@ class ProcessInsertBorder implements ShouldQueue
 
     protected $border;
 
-    protected $signature = 'process:insert-border';
-
-
     /**
      * Create a new job instance.
      */
