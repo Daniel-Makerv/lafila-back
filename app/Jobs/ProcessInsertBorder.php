@@ -88,19 +88,19 @@ class ProcessInsertBorder implements ShouldQueue
                 'maximumLanes' => $accessData->openLinesGeneral + $accessData->openLinesReadyLine + $accessData->openLinesSentryLine,
                 'general' => (object)[
                     'at' => $accessData->atGeneralLine,
-                    'delay' => 1,
+                    'delay' => "8",
                     'openLanes' => $accessData->openLinesGeneral,
                     'isOpen' => Border::getStatusForLine($this->border->description, 'General Lanes'),
                 ],
                 'readyLane' => (object)[
                     'at' => $accessData->atReadyLine,
-                    'delay' => 1,
+                    'delay' => "10",
                     'openLanes' => $accessData->openLinesReadyLine,
                     'isOpen' => Border::getStatusForLine($this->border->description, 'Ready Lanes'),
                 ],
                 'sentry' => (object)[
                     'at' => $accessData->atSentryLine,
-                    'delay' => 1,
+                    'delay' => "9",
                     'openLanes' => $accessData->openLinesSentryLine,
                     'isOpen' => Border::getStatusForLine($this->border->description, 'Sentri Lanes'),
                 ],
