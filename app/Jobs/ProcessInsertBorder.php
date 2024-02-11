@@ -120,7 +120,7 @@ class ProcessInsertBorder implements ShouldQueue
             // $generalLinesPedestrian = isset($matchesGeneralLinesPedestrian[1]) ? $matchesGeneralLinesPedestrian[1] : null;
 
             $dataPedestrian = (object)[
-                'maximumLanes' => $accessData->openLinesGeneral + $accessData->openLinesReadyLine + $accessData->openLinesSentryLine,
+                'maximumLanes' => (int)$matchesGeneral[1],
                 'general' => (object)[
                     'at' => $accessData->atGeneralLine,
                     'delay' => 1,
