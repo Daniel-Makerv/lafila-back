@@ -38,6 +38,8 @@ class ProcessInsertBorder implements ShouldQueue
     public function handle(): void
     {
 
+        Log::debug(json_encode($this->border->description));
+
         //hours openingTime and closingTime
         preg_match('/Hours: (\d+) am-(\d+) pm/', $this->border->description, $matches);
         $openingTime = isset($matches[1]) ? $matches[1] : null;
@@ -109,21 +111,26 @@ class ProcessInsertBorder implements ShouldQueue
         ];
 
         if ($this->border->title == 'Hidalgo/Pharr - Hidalgo') {
-            preg_match('/General Lanes:.*?Pedestrian.*?(\d+) lane\(s\) open/', $this->border->description, $matchesGeneralLinesPedestrian);
-            $generalLinesPedestrian = isset($matchesGeneralLinesPedestrian[1]) ? $matchesGeneralLinesPedestrian[1] : null;
+            $pattern = '/General Lanes:(.*?lane\(s\)[^Maximum]+)/';
+            preg_match_all($pattern, $this->border->description, $matchevs);
+            $generalLanesArray = array_map('trim', $matchevs[1]);
+
+            preg_match('/(\d+)\s+lane\(s\)/', $generalLanesArray[1], $matchesGeneral);
+
+            // $generalLinesPedestrian = isset($matchesGeneralLinesPedestrian[1]) ? $matchesGeneralLinesPedestrian[1] : null;
 
             $dataPedestrian = (object)[
                 'maximumLanes' => $accessData->openLinesGeneral + $accessData->openLinesReadyLine + $accessData->openLinesSentryLine,
                 'general' => (object)[
                     'at' => $accessData->atGeneralLine,
                     'delay' => 1,
-                    'openLanes' => $generalLinesPedestrian,
+                    'openLanes' => (int)$matchesGeneral[1],
                     'isOpen' => 'open',
                 ],
                 'readyLane' => (object)[
                     'at' => $accessData->atReadyLine,
                     'delay' => 1,
-                    'openLanes' => 'closed',
+                    'openLanes' => 0,
                     'isOpen' => 'close'
                 ],
             ];
@@ -156,7 +163,7 @@ class ProcessInsertBorder implements ShouldQueue
         } catch (\Exception $exception) {
             throw new Exception($exception->getMessage(), $exception->getCode() ?? 500);
         }
-        Log::debug(json_encode($dataBorder, JSON_PRETTY_PRINT) . "\n");
+        // Log::debug(json_encode($dataBorder, JSON_PRETTY_PRINT) . "\n");
 
         Log::debug($response->getBody()->getContents());
     }

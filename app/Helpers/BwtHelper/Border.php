@@ -12,6 +12,7 @@ use Saloon\XmlWrangler\Data\Element;
 use Saloon\XmlWrangler\XmlWriter;
 use Saloon\XmlWrangler\XmlReader;
 use SimpleXMLElement;
+use Illuminate\Support\Facades\Xml;
 
 class Border
 {
@@ -47,12 +48,35 @@ class Border
 
             // Convertir el string XML en un objeto
             $xml = new SimpleXMLElement($borders);
+
+            // // Acceder a los items
+            // foreach ($xml->channel->item as $item) {
+            //     $title = (string)$item->title;
+            //     $description = (string)$item->description;
+            //     $link = (string)$item->link;
+            //     $pubDate = (string)$item->pubDate;
+            //     $guid = (string)$item->guid;
+            //     $pedestrian = (string)$item->h4;
+
+            //     // Aquí puedes trabajar con los datos del item según tus necesidades
+            //     Log::debug($title);
+            //     Log::debug($description);
+            //     Log::debug($link);
+            //     Log::debug($pubDate);
+            //     Log::debug($guid);
+            //     Log::debug($pedestrian);
+            // }
+
+
             $transformDataBordersTojson = json_encode($xml);
             $bordersJson = json_decode($transformDataBordersTojson, true);
 
             $bordersJobs = [];
 
+            Log::debug($borders);
+
             foreach ($bordersJson['channel']['item'] as $border) {
+                // $bordersJobs[] = ProcessInsertBorder::dispatch((object)$border)->onQueue('bwt');
                 $bordersJobs[] = ProcessInsertBorder::dispatch((object)$border)->onQueue('bwt')->delay(now()->addMinutes(random_int(1, 7)));
             }
         } catch (\Exception $err) {
