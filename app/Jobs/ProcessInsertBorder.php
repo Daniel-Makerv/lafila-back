@@ -91,7 +91,8 @@ class ProcessInsertBorder implements ShouldQueue
                 'general' => (object)[
                     'at' => $accessData->atGeneralLine,
                     'delay' => "8",
-                    'openLanes' => $accessData->openLinesGeneral,
+                    // 'openLanes' => $accessData->openLinesGeneral,
+                    'openLanes' => $accessData->openLinesGeneral + $accessData->openLinesReadyLine,
                     'isOpen' => Border::getStatusForLine($this->border->description, 'General Lanes'),
                 ],
                 'readyLane' => (object)[
