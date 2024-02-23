@@ -66,34 +66,38 @@ class ProcessUpdateRefPointParse implements ShouldQueue
                         default => '1121 S Bridge St i, Hidalgo, TX 78557, EE. UU.',
                     };
 
-                    $sendRequest = $clientGoogle->get('/maps/api/directions/json', [
-                        'query' => [
-                            'origin' => $reference->direction,
-                            'destination' => $destinationCords,
-                            'mode' => 'driving',
-                            'country' => 'MX',
-                            'departure_time' => 'now',
-                            'key' => config("app.api_key_google"),
-                        ],
-                    ]);
+                    try {
+                        $sendRequest = $clientGoogle->get('/maps/api/directions/json', [
+                            'query' => [
+                                'origin' => $reference->direction,
+                                'destination' => $destinationCords,
+                                'mode' => 'driving',
+                                'country' => 'MX',
+                                'departure_time' => 'now',
+                                'key' => config("app.api_key_google"),
+                            ],
+                        ]);
 
 
-                    $response = json_decode($sendRequest->getBody(), true);
-                    $dataGoogle = $response['routes'][0]['legs'][0]['duration_in_traffic']['text'];
-                    // Log::debug("origin : " . $reference->direction . "\n");
-                    // Log::debug("destination : " . $destinationCords . "\n");
-                    // Log::debug("time : " . json_encode($response['routes'][0]['legs'][0]['duration_in_traffic']) . "\n");
-                    // Log::debug("\n");
+                        $response = json_decode($sendRequest->getBody(), true);
+                        $dataGoogle = $response['routes'][0]['legs'][0]['duration_in_traffic']['text'];
+                        // Log::debug("origin : " . $reference->direction . "\n");
+                        // Log::debug("destination : " . $destinationCords . "\n");
+                        // Log::debug("time : " . json_encode($response['routes'][0]['legs'][0]['duration_in_traffic']) . "\n");
+                        // Log::debug("\n");
 
-                    $dataReference = [
-                        'objectId' => $reference->objectId,
-                        'newTimeGoogle' => $dataGoogle,
-                    ];
-                    //send new time to parse server
-                    $responseParseServer = $clientParse->request('post', 'patchTimeGoogleForReference', [
-                        "body" => json_encode($dataReference),
-                    ]);
-                    Log::debug($responseParseServer->getBody()->getContents());
+                        $dataReference = [
+                            'objectId' => $reference->objectId,
+                            'newTimeGoogle' => $dataGoogle,
+                        ];
+                        //send new time to parse server
+                        $responseParseServer = $clientParse->request('post', 'patchTimeGoogleForReference', [
+                            "body" => json_encode($dataReference),
+                        ]);
+                        Log::debug($responseParseServer->getBody()->getContents());
+                    } catch (\Exception $err) {
+                       Log::error("error en el puente: " . $reference->objectId. ": " . $err->getMessage());
+                    }
                 }
 
                 # code...
