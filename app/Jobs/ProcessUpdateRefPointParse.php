@@ -59,10 +59,17 @@ class ProcessUpdateRefPointParse implements ShouldQueue
                     'base_uri' => config("app.maps_google_api_url"),
                 ]);
                 if ($reference->direction != 'S/N') {
+                    $destinationCords = match ($reference->crossing->name) {
+                        'Hidalgo/Pharr - Pharr' => '26.088440344995245, -98.2008646317392',
+                        'Hidalgo/Pharr - Anzalduas International Bridge' => '26.14560088711019, -98.31189316029355',
+                        'Hidalgo/Pharr - Hidalgo' => '1121 S Bridge St i, Hidalgo, TX 78557, EE. UU.',
+                        default => '1121 S Bridge St i, Hidalgo, TX 78557, EE. UU.',
+                    };
+
                     $sendRequest = $clientGoogle->get('/maps/api/directions/json', [
                         'query' => [
                             'origin' => $reference->direction,
-                            'destination' => '1121 S Bridge St i, Hidalgo, TX 78557, EE. UU.',
+                            'destination' => $destinationCords,
                             'mode' => 'driving',
                             'country' => 'MX',
                             'departure_time' => 'now',
