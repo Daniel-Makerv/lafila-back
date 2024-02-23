@@ -86,10 +86,10 @@ class ProcessUpdateRefPointParse implements ShouldQueue
                         // Log::debug("time : " . json_encode($response['routes'][0]['legs'][0]['duration_in_traffic']) . "\n");
                         // Log::debug("\n");
 
-                        Log::debug("origin : " . $reference->direction . "\n");
-                        Log::debug("destination : " . $destinationCords . "\n");
-                        Log::debug("time : " . json_encode($response['routes']) . "\n");
-                        Log::debug("\n");
+                        // Log::debug("origin : " . $reference->direction . "\n");
+                        // Log::debug("destination : " . $destinationCords . "\n");
+                        // Log::debug("time : " . json_encode($response['routes']) . "\n");
+                        // Log::debug("\n");
 
 
                         $dataReference = [
