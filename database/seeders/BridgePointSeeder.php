@@ -60,4 +60,20 @@ class BridgePointSeeder extends Seeder
             ]);
         }
     }
+
+
+    // Parse.Cloud.define("listBridge", async function(req,res){
+    //     // Crear una consulta para la clase Bridge
+    //     var bridgeQuery = new Parse.Query("Bridge");
+
+    //     // Incluir los ReferencePoint asociados a cada Bridge
+    //     bridgeQuery.include("referencePoints");
+
+    //     // Ejecutar la consulta
+    //     bridgeQuery.find().then(function(bridges) {
+    //     return JSON.stringify(obj);
+    //     }).catch(function(error) {
+    //     console.error("Error al realizar la consulta: " + error.message);
+    //     });
+    // });
 }
