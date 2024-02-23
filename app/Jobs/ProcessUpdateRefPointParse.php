@@ -86,6 +86,12 @@ class ProcessUpdateRefPointParse implements ShouldQueue
                         // Log::debug("time : " . json_encode($response['routes'][0]['legs'][0]['duration_in_traffic']) . "\n");
                         // Log::debug("\n");
 
+                        Log::debug("origin : " . $reference->direction . "\n");
+                        Log::debug("destination : " . $destinationCords . "\n");
+                        Log::debug("time : " . json_encode($response['routes']) . "\n");
+                        Log::debug("\n");
+
+
                         $dataReference = [
                             'objectId' => $reference->objectId,
                             'newTimeGoogle' => $dataGoogle,
@@ -96,7 +102,7 @@ class ProcessUpdateRefPointParse implements ShouldQueue
                         ]);
                         Log::debug($responseParseServer->getBody()->getContents());
                     } catch (\Exception $err) {
-                       Log::error("error en el puente: " . $reference->objectId. ": " . $err->getMessage());
+                        Log::error("error en el puente: " . $reference->objectId . ": " . $err->getMessage());
                     }
                 }
 
