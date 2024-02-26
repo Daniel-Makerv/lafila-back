@@ -61,6 +61,16 @@ class ProcessInsertBorder implements ShouldQueue
         preg_match('/Maximum Lanes: (\d+)/', $this->border->description, $maxLanesMatches);
         $maxLanes = isset($maxLanesMatches[1]) ? $maxLanesMatches[1] : null;
 
+
+        //delays array
+        $pattern = '/\b(\d+)\s*min delay\b/';
+
+        preg_match_all($pattern, $this->border->description, $matchesDelays);
+
+        $delayArray = $matchesDelays[1];
+
+        Log::debug(json_encode($delayArray));
+
         //dataAccess
         $accessData = (object)[
             'openingTime' => $openingTime,
@@ -90,20 +100,20 @@ class ProcessInsertBorder implements ShouldQueue
                 'maximumLanes' => $accessData->openLinesGeneral + $accessData->openLinesReadyLine + $accessData->openLinesSentryLine,
                 'general' => (object)[
                     'at' => $accessData->atGeneralLine,
-                    'delay' => "8",
+                    'delay' => $delayArray[0],
                     // 'openLanes' => $accessData->openLinesGeneral,
                     'openLanes' => $accessData->openLinesGeneral + $accessData->openLinesReadyLine,
                     'isOpen' => Border::getStatusForLine($this->border->description, 'General Lanes'),
                 ],
                 'readyLane' => (object)[
                     'at' => $accessData->atReadyLine,
-                    'delay' => "10",
+                    'delay' => $delayArray[1],
                     'openLanes' => $accessData->openLinesReadyLine,
                     'isOpen' => Border::getStatusForLine($this->border->description, 'Ready Lanes'),
                 ],
                 'sentry' => (object)[
                     'at' => $accessData->atSentryLine,
-                    'delay' => "9",
+                    'delay' => $delayArray[2],
                     'openLanes' => $accessData->openLinesSentryLine,
                     'isOpen' => Border::getStatusForLine($this->border->description, 'Sentri Lanes'),
                 ],
@@ -153,19 +163,19 @@ class ProcessInsertBorder implements ShouldQueue
             'timeout' => 1000
         ]);
 
-        try {
-            $form = [
-                'data' => $dataBorder
-            ];
+        // try {
+        //     $form = [
+        //         'data' => $dataBorder
+        //     ];
 
-            $response = $client->request('post', 'apiSaveBwt', [
-                "body" => json_encode($form),
-            ]);
-        } catch (\Exception $exception) {
-            throw new Exception($exception->getMessage(), $exception->getCode() ?? 500);
-        }
-        // Log::debug(json_encode($dataBorder, JSON_PRETTY_PRINT) . "\n");
+        //     $response = $client->request('post', 'apiSaveBwt', [
+        //         "body" => json_encode($form),
+        //     ]);
+        // } catch (\Exception $exception) {
+        //     throw new Exception($exception->getMessage(), $exception->getCode() ?? 500);
+        // }
+        // // Log::debug(json_encode($dataBorder, JSON_PRETTY_PRINT) . "\n");
 
-        Log::debug($response->getBody()->getContents());
+        // Log::debug($response->getBody()->getContents());
     }
 }

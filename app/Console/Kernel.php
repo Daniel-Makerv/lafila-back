@@ -12,8 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('process:update-border')->everyTenMinutes();
-        $schedule->command('get-reference-for-parse')->everyTenMinutes();
+        $schedule->command('process:update-border')->everyFiveMinutes();
+        // $schedule->command('get-reference-for-parse')->everyTenMinutes();
     }
 
     /**

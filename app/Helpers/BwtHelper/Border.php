@@ -73,8 +73,6 @@ class Border
 
             $bordersJobs = [];
 
-            Log::debug($borders);
-
             foreach ($bordersJson['channel']['item'] as $border) {
                 // $bordersJobs[] = ProcessInsertBorder::dispatch((object)$border)->onQueue('bwt');
                 $bordersJobs[] = ProcessInsertBorder::dispatch((object)$border)->onQueue('bwt')->delay(now()->addMinutes(random_int(1, 7)));
