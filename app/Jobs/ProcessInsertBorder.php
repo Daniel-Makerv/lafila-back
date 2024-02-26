@@ -163,19 +163,19 @@ class ProcessInsertBorder implements ShouldQueue
             'timeout' => 1000
         ]);
 
-        // try {
-        //     $form = [
-        //         'data' => $dataBorder
-        //     ];
+        try {
+            $form = [
+                'data' => $dataBorder
+            ];
 
-        //     $response = $client->request('post', 'apiSaveBwt', [
-        //         "body" => json_encode($form),
-        //     ]);
-        // } catch (\Exception $exception) {
-        //     throw new Exception($exception->getMessage(), $exception->getCode() ?? 500);
-        // }
-        // // Log::debug(json_encode($dataBorder, JSON_PRETTY_PRINT) . "\n");
+            $response = $client->request('post', 'apiSaveBwt', [
+                "body" => json_encode($form),
+            ]);
+        } catch (\Exception $exception) {
+            throw new Exception($exception->getMessage(), $exception->getCode() ?? 500);
+        }
+        // Log::debug(json_encode($dataBorder, JSON_PRETTY_PRINT) . "\n");
 
-        // Log::debug($response->getBody()->getContents());
+        Log::debug($response->getBody()->getContents());
     }
 }
