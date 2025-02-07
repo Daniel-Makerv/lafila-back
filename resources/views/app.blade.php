@@ -18,4 +18,5 @@
     <body class="font-sans antialiased">
         @inertia
     </body>
+    <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
 </html>
